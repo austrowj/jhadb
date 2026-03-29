@@ -2,11 +2,19 @@
 const std = @import("std");
 const Io = std.Io;
 
-/// This is a documentation comment to explain the `printAnotherMessage` function below.
-///
-/// Accepting an `Io.Writer` instance is a handy way to write reusable code.
-pub fn printAnotherMessage(writer: *Io.Writer) Io.Writer.Error!void {
-    try writer.print("Run `zig build test` to run the tests.\n", .{});
+/// Read, evaluate, print, loop
+pub fn repl(reader: *Io.Reader, writer: *Io.Writer) !void {
+    while (true) {
+        _ = try writer.write("\n> ");
+        try writer.flush();
+        const line = try reader.takeDelimiter('\n') orelse unreachable;
+        const result = eval(line);
+        try writer.writeAll(result);
+    }
+}
+
+fn eval(buf: []const u8) []const u8 {
+    return buf;
 }
 
 pub fn add(a: i32, b: i32) i32 {

@@ -23,10 +23,14 @@ pub fn main(init: std.process.Init) !void {
     // are implementing gzip, then only the compressed bytes should be sent to
     // stdout, not any debugging messages.
     var stdout_buffer: [1024]u8 = undefined;
-    var stdout_file_writer: Io.File.Writer = .init(.stdout(), io, &stdout_buffer);
+    var stdout_file_writer = std.Io.File.stdout().writer(io, &stdout_buffer);
     const stdout_writer = &stdout_file_writer.interface;
 
-    try jhadb.printAnotherMessage(stdout_writer);
+    var stdin_buffer: [1024]u8 = undefined;
+    var stdin_file_reader = std.Io.File.stdin().reader(io, &stdin_buffer);
+    const stdin_reader = &stdin_file_reader.interface;
+
+    try jhadb.repl(stdin_reader, stdout_writer);
 
     try stdout_writer.flush(); // Don't forget to flush!
 }
