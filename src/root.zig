@@ -14,6 +14,9 @@ pub fn repl(reader: *Io.Reader, writer: *Io.Writer) !void {
 }
 
 fn eval(buf: []const u8) []const u8 {
+    if (std.mem.eql(u8, buf, "quit()")) {
+        std.process.exit(0);
+    }
     return buf;
 }
 
